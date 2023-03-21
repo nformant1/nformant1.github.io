@@ -22,7 +22,7 @@
     <h1>Blockchain Block Count</h1>
     <p id="blockcount"></p>
     <script>
-        fetch('http://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getblockcount')
+        fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getblockcount')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('blockcount').textContent = `The current block count is ${data}`;
