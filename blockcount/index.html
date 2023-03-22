@@ -1,0 +1,33 @@
+<html>
+	<!-- ALL CREDIT TO https://github.com/paulcuth/departure-board -->
+	<head>
+		<title>Dogecoin Blocktime</title>
+		<meta http-equiv="refresh" content="30">
+		<link rel="stylesheet" href="./css/departure-board.css" />
+		<style>
+			body {
+				color: white;
+				background-color: #333333;
+			}
+		</style>
+	</head>
+	
+	<body>
+
+		<div id="content"></div>
+		<script src="./js/departure-board.js"></script>
+		<script>
+			var blockCount = 0
+
+			var board = new DepartureBoard (document.getElementById ('content'), { rowCount: 2, letterCount: 25 }); 
+        	fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getblockcount', {
+			})
+			  .then(response => response.json())
+			  .then(data => {
+				  blockCount = String(data);
+				  board.setValue (['Dogecoin Blockcount', blockCount]);
+			  });
+		</script>
+	
+	</body>
+</html>
