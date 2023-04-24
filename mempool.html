@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mempool</title>
+    <style>
+		body {
+			font-family: "Courier New", Courier, monospace;
+		}
+		table {
+			border-collapse: collapse;
+		}
+		th, td {
+			border: 1px solid black;
+			padding: 8px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Mempool</h1>
+	<table>
+		<thead>
+			<tr>
+				<th>Transaction ID</th>
+				<th>Transaction Size</th>
+			</tr>
+		</thead>
+		<tbody id="mempool-data"></tbody>
+	</table>
+
+	<script>
+        fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getrawmempool')
+            .then(response => response.json())
+            .then(data => {
+                const mempoolTable = document.getElementById('mempool-data');
+    
+                Object.keys(data).forEach(txid => {
+                    const row = document.createElement('tr');
+    
+                    const txidCell = document.createElement('td');
+                    txidCell.textContent = txid;
+                    row.appendChild(txidCell);
+    
+                    const sizeCell = document.createElement('td');
+                    const sizeLink = document.createElement('a');
+                    sizeLink.href = `https://nformant1.github.io/rawtx?txid=${data[txid]}`;
+                    sizeLink.textContent = data[txid];
+                    sizeLink.style.color = 'black';
+                    sizeCell.appendChild(sizeLink);
+                    row.appendChild(sizeCell);
+    
+                    mempoolTable.appendChild(row);
+                });
+            });
+    </script>
+    
+</body>
+</html>
