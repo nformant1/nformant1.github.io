@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Raw Transaction</title>
+	<style>
+		body {
+			font-family: "Courier New", Courier, monospace;
+		}
+		pre {
+			white-space: pre-wrap;
+			word-wrap: break-word;
+		}
+	</style>
+</head>
+<body>
+	<h1>Raw Transaction</h1>
+	<pre id="transaction-data"></pre>
+
+	<script>
+		const urlParams = new URLSearchParams(window.location.search);
+		const txid = urlParams.get('txid');
+
+		fetch(`https://easypeasy.eastus.cloudapp.azure.com/api/rawtransactions/getrawtransaction/${txid}`)
+			.then(response => response.json())
+			.then(data => {
+				const transactionData = document.getElementById('transaction-data');
+				transactionData.textContent = JSON.stringify(data, null, 2);
+			});
+	</script>
+</body>
+</html>
