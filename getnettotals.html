@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Raw Transaction</title>
+	<style>
+		body {
+			font-family: "Courier New", Courier, monospace;
+		}
+		pre {
+			white-space: pre-wrap;
+			word-wrap: break-word;
+		}
+	</style>
+</head>
+<body>
+	<h1>getnettotals</h1>
+	<pre id="json-data"></pre>
+
+	<script>
+		fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getnettotals')
+			.then(response => response.json())
+			.then(data => {
+				const jsonData = document.getElementById('json-data');
+				jsonData.textContent = JSON.stringify(data, null, 2);
+			});
+	</script>
+</body>
+</html>
