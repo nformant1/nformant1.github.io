@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>LN Test</title>
+    <script>
+      function redirect() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var redirectUrl = urlParams.get('url');
+        if (redirectUrl) {
+          window.location.replace(redirectUrl);
+        } else {
+          console.error("Error! No address provided, please use nformant1.github.io/ln/redirect.html?lightning:[RECEIVER]");
+        }
+      }
+      window.onload = redirect;
+    </script>
+  </head>
+  <body>
+    <h1>You will be redirected</h1>
+    <p>Just a sec and you'll be redirected...</p>
+  </body>
+</html>
