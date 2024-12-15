@@ -1,60 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>nformant</title>
-	<style>
-		body {
-			font-family: "Courier New", Courier, monospace;
-			font-size: 40px;
-		}
-		table {
-			border-collapse: collapse;
-		}
-		th, td {
-			border: 1px solid black;
-			padding: 8px;
-		}
-		.circle {
-			display: inline-block;
-			width: 250px;
-			height: 250px;
-			border-radius: 50%;
-			overflow: hidden;
-			border: 2px solid white;
-			box-shadow: 0 0 5px white;
-			margin-top: 50px;
-		}
-		.circle img {
-			display: block;
-			max-width: 100%;
-			height: auto;
-		}
-
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nformant</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-	<div class="circle">
-		<img src="https://nformant1.github.io/img/nformant.jpg" alt="Nformant" />
-	</div>
-	<div class="block-count">
-		<p>Block Count:</p>
-		<p id="block-count-value">loading...</p>
-	</div>
-	<script>
-		var blockCount = 0;
-
-		fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getblockcount')
-			.then(response => response.json())
-			.then(data => {
-				blockCount = String(data);
-				document.getElementById('block-count-value').innerHTML = blockCount;
-			})
-			.catch(error => console.error(error));
-	</script>
-	<div class="rest">
-		<p><a href="https://nformant1.github.io/mempool.html">mempool.html</a></p>
-		<p><a href="https://nformant1.github.io/getnettotals.html">getnettotals.html</a></p>
-	</div>
-	
+    <header>
+        <div class="container">
+            <h1>often shared repos and links</h1>
+              <img src="https://nformant1.github.io/img/nformant.jpg" alt="Header Image" class="header-image">
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/nformant1/DogecoinAPI">DogecoinAPI (repo)</a></li>
+                    <li><a href="https://github.com/nformant1/vanitygen-plus">vanitygen-plus (repo)</a></li>
+                    <li><a href="https://www.reddit.com/r/litecoinmining/comments/mtjbpb/solo_merged_mining_doge_and_ltc_local_cpu_and_asic/">SOLO Merged Mining (how to)</a></li>
+                    <li><a href="https://www.reddit.com/r/dogecoindev/">r/dogecoindev</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+<h2>find ( ͡° ͜ʖ ͡°) me</h2>
+          <p>on <a href="https://www.reddit.com/user/_nformant/">reddit</a><br>
+            on <a href="https://x.com/_nformant">x (╯°□°)╯︵ ┻━┻ </a><br>
+            on <a href="hhttps://www.youtube.com/watch?v=dQw4w9WgXcQ/">tinder</a><br>
+            on <a href="https://medium.com/@informant1">medium</a><br>
+          </p>
+          <h2>node ༼ つ ▀_▀ ༽つ stats</h2>
+          <p></p>
+            <div class="container">
+                <div class="block-count">
+                  <p id="block-count-value">Current blockcount: loading...</p>
+                </div>
+                <script>
+                  var blockCount = 0;
+              
+                  fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getblockcount')
+                    .then(response => response.json())
+                    .then(data => {
+                      blockCount = 'Current blockcount: ' + String(data);
+                      document.getElementById('block-count-value').innerHTML = blockCount;
+                    })
+                    .catch(error => console.error(error));
+                </script>
+                
+                  <div id="loading">Loading data...</div>
+                  <div id="result"></div>
+    
+                  <script>
+                      // Function to fetch data from the API
+                      async function fetchData() {
+                          try {
+                              // Fetch data from the API
+                              const response = await fetch('https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getnettotals');
+                              
+                              // If the response is successful
+                              if (response.ok) {
+                                  const data = await response.json(); // Parse the JSON response
+                                  
+                                  // Extract 'totalbytessent'
+                                  let totalBytesSent = data.totalbytessent;
+    
+                                  // Convert bytes to GB or MB based on the value
+                                  let displayValue;
+                                  if (totalBytesSent > 1000000000) {
+                                      displayValue = (totalBytesSent / Math.pow(10, 9)).toFixed(2) + ' GB'; // Convert to GB
+                                  } else {
+                                      displayValue = (totalBytesSent / Math.pow(10, 6)).toFixed(2) + ' MB'; // Convert to MB
+                                  }
+                                  
+                                  // Update the content on the page
+                                  document.getElementById('loading').style.display = 'none'; // Hide loading message
+                                  document.getElementById('result').innerText = `Node Stats: Total Bytes Sent: ${displayValue}`;
+                              } else {
+                                  throw new Error('Node Stats: unavailable');
+                              }
+                          } catch (error) {
+                              document.getElementById('loading').style.display = 'none';
+                              document.getElementById('result').innerText = 'Error fetching data';
+                          }
+                      }
+    
+                      // Call the fetchData function when the page loads
+                      window.onload = fetchData;
+                  </script>
+    
+                
+            </div>
+            
+        </section>
+        <!--
+        <section class="content">
+            <div class="container">
+                <h3>Our Features</h3>
+                <p>...more to follow.</p>
+            </div>
+        </section>
+      -->
+        
+    </main>
+    <footer>
+        <div class="container">
+          https://nformant1.github.io/
+        </div>
+    </footer>
 </body>
 </html>
