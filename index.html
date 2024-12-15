@@ -76,9 +76,9 @@
                                   
                                   // Update the content on the page
                                   document.getElementById('loading').style.display = 'none'; // Hide loading message
-                                  document.getElementById('result').innerText = `Node Stats: Total Bytes Sent: ${displayValue}`;
+                                  document.getElementById('result').innerText = `Total Bytes Sent: ${displayValue}`;
                               } else {
-                                  throw new Error('Node Stats: unavailable');
+                                  throw new Error('Total Bytes Sent: unavailable');
                               }
                           } catch (error) {
                               document.getElementById('loading').style.display = 'none';
