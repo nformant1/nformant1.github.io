@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            margin: 20px;
+        }
+
+        header button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        header button:hover {
+            background-color: #ff9a8b;
+        }
+
+        #players {
+            margin-left: 20px;
+        }
+
+        .player {
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(7, 100px);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            background: url('memory_background.png') no-repeat center center / cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid #ff9a9e;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .memory-card img {
+            display: none;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .memory-card.flipped img {
+            display: block;
+        }
+
+        .memory-card.matched {
+            background-color: transparent;
+            pointer-events: none;
+        }
+
+        #winner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            color: #ff6f61;
+            text-shadow: 2px 2px 5px #fff;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Memory Game</h1>
+        <button id="addPlayer">+ Add Player</button>
+        <div id="players"></div>
+    </header>
+
+    <div class="memory-game" id="memoryGame"></div>
+
+    <div id="winner"></div>
+
+    <script>
+        // Player management
+        const addPlayerButton = document.getElementById('addPlayer');
+        const playersContainer = document.getElementById('players');
+        let players = [];
+
+        addPlayerButton.addEventListener('click', () => {
+            const playerName = prompt('Enter player name:');
+            if (playerName) {
+                const player = {
+                    name: playerName,
+                    score: 0
+                };
+                players.push(player);
+                renderPlayers();
+            }
+        });
+
+        function renderPlayers() {
+            playersContainer.innerHTML = '';
+            players.forEach((player, index) => {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player';
+                playerDiv.innerHTML = `
+                    <label>
+                        <input type="radio" name="activePlayer" value="${index}" ${index === 0 ? 'checked' : ''}>
+                        ${player.name} (Score: ${player.score})
+                    </label>
+                `;
+                playersContainer.appendChild(playerDiv);
+            });
+        }
+
+        // Memory game setup
+        const memoryGame = document.getElementById('memoryGame');
+        const cardImages = [];
+        for (let i = 1; i <= 14; i++) {
+            cardImages.push(`memory_${i}.png`, `memory_${i}.png`);
+        }
+
+        cardImages.sort(() => 0.5 - Math.random());
+
+        cardImages.forEach((src, index) => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.index = index;
+            card.dataset.image = src;
+
+            const img = document.createElement('img');
+            img.src = src;
+
+            card.appendChild(img);
+            memoryGame.appendChild(card);
+        });
+
+        let flippedCards = [];
+
+        memoryGame.addEventListener('click', (event) => {
+            const activePlayerIndex = document.querySelector('input[name="activePlayer"]:checked')?.value;
+            if (activePlayerIndex === undefined) {
+                alert('Please select a player.');
+                return;
+            }
+
+            const clickedCard = event.target.closest('.memory-card');
+            if (!clickedCard || clickedCard.classList.contains('flipped') || clickedCard.classList.contains('matched')) {
+                return;
+            }
+
+            clickedCard.classList.add('flipped');
+            flippedCards.push(clickedCard);
+
+            if (flippedCards.length === 2) {
+                const [card1, card2] = flippedCards;
+                if (card1.dataset.image === card2.dataset.image) {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+
+                    players[activePlayerIndex].score += 1;
+                    const nextPlayerIndex = activePlayerIndex;
+                    renderPlayers();
+                } else {
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+
+                        const nextPlayerIndex = (parseInt(activePlayerIndex) + 1) % players.length;
+                        document.querySelector(`input[name="activePlayer"][value="${nextPlayerIndex}"]`).checked = true;
+                    }, 1000);
+                }
+
+                flippedCards = [];
+            }
+
+            if (document.querySelectorAll('.memory-card.matched').length === cardImages.length) {
+                setTimeout(() => displayWinner(), 500);
+            }
+        });
+
+        function displayWinner() {
+            const maxScore = Math.max(...players.map(player => player.score));
+            const winners = players.filter(player => player.score === maxScore).map(player => player.name);
+            const winnerDiv = document.getElementById('winner');
+            winnerDiv.textContent = `Winner${winners.length > 1 ? 's' : ''}: ${winners.join(', ')}`;
+            winnerDiv.style.display = 'block';
+        }
+
+        renderPlayers();
+    </script>
+</body>
+</html>
