@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Simulation</title>
+    <style>
+        body {
+            background-color: black;
+            color: lime;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            padding: 20px;
+        }
+        .terminal {
+            white-space: pre-wrap;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background-color: lime;
+            animation: blink 1s step-end infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal" id="terminal"></div>
+    <script>
+        async function typeText(element, text, delay = 40) {
+            for (let char of text) {
+                element.innerHTML += char;
+                await new Promise(r => setTimeout(r, delay));
+            }
+        }
+
+        async function fetchBestBlockHash() {
+            const response = await fetch("https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getbestblockhash");
+            let text = await response.text();
+            return text.replace(/"/g, "");
+        }
+
+        async function fetchBlock(hash) {
+            const response = await fetch("https://easypeasy.eastus.cloudapp.azure.com/api/blockchain/getblock/" + hash);
+            return response.json();
+        }
+
+        async function runTerminal() {
+            const terminal = document.getElementById("terminal");
+            terminal.innerHTML = ""; 
+            
+            await typeText(terminal, "getbestblockhash\n");
+            let getbestblockhash = await fetchBestBlockHash();
+            await typeText(terminal, getbestblockhash + '\n');
+            
+            await typeText(terminal, "getblock " + getbestblockhash + "\n");
+            let blockData = await fetchBlock(getbestblockhash);
+            let formattedBlockData = JSON.stringify(blockData, null, 2);
+            await typeText(terminal, formattedBlockData + "\n");
+            
+            setTimeout(() => location.reload(), 60000);
+        }
+        
+        runTerminal();
+    </script>
+</body>
+</html>
